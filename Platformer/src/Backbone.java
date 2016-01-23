@@ -8,6 +8,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Backbone
 {
+	private static final int WIDTH = 300;
+	private static final int HEIGHT = 300;
 	
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
@@ -46,27 +48,18 @@ public class Backbone
 
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		int width = 300, height = 300;
-		windowUID = glfwCreateWindow(width, height, "Mario meets Fez meets Journey", NULL, NULL);
+		windowUID = glfwCreateWindow(WIDTH, HEIGHT, "Mario meets Fez meets Journey", NULL, NULL);
 		if (windowUID == NULL ) {
 			System.err.println("Failed to create the GLFW window");
 			assert false;
 		}
 
 		//TODO: implement keybinds in a separate class
-		glfwSetKeyCallback(windowUID, keyCallback = new GLFWKeyCallback()
-		{
-			@Override
-			public void invoke(long window, int key, int scancode, int action, int mods)
-			{
-				if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-					glfwSetWindowShouldClose(window, GLFW_TRUE);
-			}
-		});
+		glfwSetKeyCallback(windowUID, keyCallback = new KeyboardHandler());
 
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-		glfwSetWindowPos(windowUID, (vidmode.width()-width)/2, (vidmode.height()-height)/2);
+		glfwSetWindowPos(windowUID, (vidmode.width()-WIDTH)/2, (vidmode.height()-HEIGHT)/2);
 		
 		glfwMakeContextCurrent(windowUID);
 		glfwSwapInterval(1);
