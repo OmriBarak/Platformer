@@ -10,30 +10,13 @@ public class Backbone
 {
 	private static final int WIDTH = 300;
 	private static final int HEIGHT = 300;
-	
+
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
 
 	private long windowUID;
 	private long deltaRef;
-	
-	public void run() {
-		init();
-		
-		GL.createCapabilities();
-		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
-		while (glfwWindowShouldClose(windowUID) == GLFW_FALSE ) {
-			glfwPollEvents();
-			draw();
-		}
-		
-		glfwDestroyWindow(windowUID);
-		keyCallback.release();
-		glfwTerminate();
-		errorCallback.release();
-	}
-	
 	private void init()
 	{
 		deltaRef = System.currentTimeMillis();
@@ -71,14 +54,31 @@ public class Backbone
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwSwapBuffers(windowUID);
 	}
-	
+
 	private double delta() {
 		long currentTime = System.currentTimeMillis();
 		double delta = (currentTime - deltaRef)/1000.0f;
 		deltaRef = currentTime;
 		return delta;
 	}
-	
+
+	public void run() {
+		init();
+		
+		GL.createCapabilities();
+		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+
+		while (glfwWindowShouldClose(windowUID) == GLFW_FALSE ) {
+			glfwPollEvents();
+			draw();
+		}
+		
+		glfwDestroyWindow(windowUID);
+		keyCallback.release();
+		glfwTerminate();
+		errorCallback.release();
+	}
+
 	public static void main(String[] arghhhhhh) {
 		Backbone game = new Backbone();
 		game.run();
