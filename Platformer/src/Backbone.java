@@ -6,29 +6,36 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class Backbone implements Runnable
+public class Backbone
 {
-	private Thread thread;
 	
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
 
 	private long windowUID;
+	private long deltaRef;
 	
-	public void begin()
-	{
-		try
-		{
-			init();
-		} catch(Error e) {
-			
-		}
-		thread = new Thread(this, "Backbone");
-		thread.start();
-	}
+	public void run() {
+		init();
+		
+		GL.createCapabilities();
+		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
+		while (glfwWindowShouldClose(windowUID) == GLFW_FALSE ) {
+			glfwPollEvents();
+			draw();
+		}
+		
+		glfwDestroyWindow(windowUID);
+		keyCallback.release();
+		glfwTerminate();
+		errorCallback.release();
+	}
+	
 	private void init()
 	{
+		deltaRef = System.currentTimeMillis();
+		
 		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 
 		if(glfwInit() != GLFW_TRUE)
@@ -37,12 +44,11 @@ public class Backbone implements Runnable
 			assert false;
 		}
 
-		//glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		int width = 300, height = 300;
-		
-		if ((windowUID = glfwCreateWindow(width, height, "Mario meets Fez meets Journey", NULL, NULL)) == NULL ) {
+		windowUID = glfwCreateWindow(width, height, "Mario meets Fez meets Journey", NULL, NULL);
+		if (windowUID == NULL ) {
 			System.err.println("Failed to create the GLFW window");
 			assert false;
 		}
@@ -66,26 +72,6 @@ public class Backbone implements Runnable
 		glfwSwapInterval(1);
 		
 		glfwShowWindow(windowUID);
-
-		GL.createCapabilities();
-	}
-
-	public void run() {
-		//clear the color
-		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
-
-		while (glfwWindowShouldClose(windowUID) == GLFW_FALSE ) {
-			glfwPollEvents();
-			draw();
-		}
-		
-		glfwDestroyWindow(windowUID);
-		
-		keyCallback.release();
-		
-		glfwTerminate();
-		
-		errorCallback.release();
 	}
 
 	private void draw() {
@@ -93,9 +79,15 @@ public class Backbone implements Runnable
 		glfwSwapBuffers(windowUID);
 	}
 	
+	private double delta() {
+		long currentTime = System.currentTimeMillis();
+		double delta = (currentTime - deltaRef)/1000.0f;
+		deltaRef = currentTime;
+		return delta;
+	}
+	
 	public static void main(String[] arghhhhhh) {
 		Backbone game = new Backbone();
 		game.run();
-
 	}
 }
