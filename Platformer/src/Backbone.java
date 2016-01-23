@@ -54,7 +54,6 @@ public class Backbone
 		glfwSwapInterval(1);
 		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 		glEnable(GL_DEPTH_TEST);
-		
 		System.out.println("Running OpenGL version" + glGetString(GL_VERSION) + ".");
 	}
 
