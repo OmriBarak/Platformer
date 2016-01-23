@@ -93,7 +93,7 @@ public class Backbone
 	
 	public static void main(String[] args) {
 		Backbone game = new Backbone();
-		game.run();
+		game.begin();
 
 	}
 }
