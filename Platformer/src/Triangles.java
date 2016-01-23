@@ -15,7 +15,10 @@ public class Triangles {
 		vertices = new float[10];
 		
 		for(int i = 0; i < vertices.length; i++){
-			
+			Vertex vert = new Vertex();
+			vert.setPosition(new float[]{0.0f, 0.0f, 0.0f});
+			vert.setTextureCoords(new float[]{0.0f, 0.0f});
+			vert.setNormal(new float[]{0.0f, 0.0f, 0.0f});
 		}
 	}
 	
@@ -23,7 +26,7 @@ public class Triangles {
 		indices = new int[10];
 		
 		for(int i = 0; i < indices.length; i++){
-			
+			indices[i] = i;
 		}
 	}
 }
