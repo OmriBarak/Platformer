@@ -6,10 +6,10 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class Backbone implements Runnable
-{
-	private Thread thread;
-	
+public class Backbone
+{	
+	private static final int WIDTH = 300;
+	private static final int HEIGHT = 300;
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
 
@@ -23,8 +23,6 @@ public class Backbone implements Runnable
 		} catch(Error e) {
 			
 		}
-		thread = new Thread(this, "Backbone");
-		thread.start();
 	}
 
 	private void init()
@@ -40,7 +38,6 @@ public class Backbone implements Runnable
 		//glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		int width = 300, height = 300;
 		
 		if ((windowUID = glfwCreateWindow(width, height, "Mario meets Fez meets Journey", NULL, NULL)) == NULL ) {
 			System.err.println("Failed to create the GLFW window");
@@ -60,17 +57,18 @@ public class Backbone implements Runnable
 
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-		glfwSetWindowPos(windowUID, (vidmode.width()-width)/2, (vidmode.height()-height)/2);
+		glfwSetWindowPos(windowUID, (vidmode.width()-WIDTH)/2, (vidmode.height()-HEIGHT)/2);
 		
 		glfwMakeContextCurrent(windowUID);
 		glfwSwapInterval(1);
 		
 		glfwShowWindow(windowUID);
 
-		GL.createCapabilities();
 	}
 
 	public void run() {
+		GL.createCapabilities();
+
 		//clear the color
 		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
@@ -93,7 +91,7 @@ public class Backbone implements Runnable
 		glfwSwapBuffers(windowUID);
 	}
 	
-	public static void main(String[] arghhhhhh) {
+	public static void main(String[] args) {
 		Backbone game = new Backbone();
 		game.run();
 
