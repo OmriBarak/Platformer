@@ -11,16 +11,10 @@ public class Vertex {
 	private int vboPosition = 0, vboTexUV = 0, vboNormal = 0;
 	private int vaoId = 0;
 	
-	public Vertex() {}
-	
-	void genBuffers() {
-		
-        
-        
-        
-        
-        
-        //TO DRAW
+	public Vertex(float[] pos, float[] tex, float[] norm) {
+		position = pos;
+		texUV = tex;
+		normal = norm;
 	}
 	
 	void bufferData() {
