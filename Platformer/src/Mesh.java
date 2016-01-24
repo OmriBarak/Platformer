@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-public class /*(Mesh)*/ Vertex {	
+public class Mesh {	
 	private float[] position; //xyz (w added in shader)
 	private float[] texUV;	  //uv
 	private float[] normal;	  //ijkw
@@ -20,7 +20,7 @@ public class /*(Mesh)*/ Vertex {
 	private int eboId = 0;
 	private int vaoId = 0;
 	
-	public Vertex(float[] pos, float[] tex, float[] norm, float[] col, int[] ind) {
+	public Mesh(float[] pos, float[] tex, float[] norm, float[] col, int[] ind) {
 		position = pos;
 		texUV = tex;
 		normal = norm;
@@ -51,7 +51,7 @@ public class /*(Mesh)*/ Vertex {
         normalBuffer.put(position).flip();
         glBindBuffer(GL_ARRAY_BUFFER, vboNormal);
         glBufferData(GL_ARRAY_BUFFER, normalBuffer, GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
         
         vboColor	= glGenBuffers();
         FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(color.length);

@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 
-public class Triangles {
+public class Cylinder {
 	private ArrayList<Float> vertices;
 	private ArrayList<Integer> indices;
 	
 	private final static int HEIGHT = 5; 
 	private int n;
 	
-	public Triangles(){
+	public Cylinder(){
 	
 	}
 	
@@ -51,7 +51,7 @@ public class Triangles {
 		}
 	}
 
-	public Vertex toMesh() {
+	public Mesh toMesh() {
 		//pos[]
 		float pos[] = new float[vertices.size()];		
 		for(int i=0; i<vertices.size(); i++) {
@@ -91,7 +91,7 @@ public class Triangles {
 			ind[i] = indices.get(i);
 		}
 		
-		return new Vertex(pos, tex, norm, col, ind);
+		return new Mesh(pos, tex, norm, col, ind);
 	}
 	
 	public ArrayList<Float> getVertices(){
