@@ -4,11 +4,13 @@ public class Cylinder {
 	private ArrayList<Float> vertices;
 	private ArrayList<Integer> indices;
 	
-	private final static int HEIGHT = 5; 
+	private final static int HEIGHT = 200; 
 	private int n;
 	
 	public Cylinder(){
-	
+		vertices = new ArrayList<Float>();
+		indices = new ArrayList<Integer>();
+		n = 0;
 	}
 	
 	public void genPrism(int n){
@@ -29,7 +31,7 @@ public class Cylinder {
 		
 		indices = new ArrayList<Integer>();
 		
-		for(int i = 0; i < (n*(HEIGHT-1)-1); i++){
+		for(int i = 0; i < (n*(HEIGHT-1)); i++){
 			if( (i+1) % n == 0 ) {
 				indices.add(i);
 				indices.add(i-n+1);
@@ -74,13 +76,16 @@ public class Cylinder {
 		}
 		
 		//col[]
-		float colorIncrement = 1.0f/((float) vertices.size());
+		float color[] = new float[3];
 		float col[] = new float[4*vertices.size()/3];
-		for(int i=0; i<HEIGHT; i++) {
+		for(int i=0; i<HEIGHT; i++) { 
+			color[0] = (float)Math.random();
+			color[1] = (float)Math.random();
+			color[2] = (float)Math.random();
 			for(int j=0;j<n;j++) {
-				col[4*(n*i+j)] = i*colorIncrement;
-				col[4*(n*i+j)+1] = i*colorIncrement;
-				col[4*(n*i+j)+2] = i*colorIncrement;
+				col[4*(n*i+j)] = color[0];
+				col[4*(n*i+j)+1] = color[1];
+				col[4*(n*i+j)+2] = color[2];
 				col[4*(n*i+j)+3] = 0.0f;
 			}
 		}

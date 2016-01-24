@@ -1,11 +1,11 @@
-#version 330 core
+#version 410 core
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texUV;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec4 color;
 
-uniform float time;
+uniform float yDisp;
 uniform float fovX;
 uniform float fovY;
 uniform float nearZ;
@@ -30,34 +30,34 @@ vec3 normalize(vec3 c){
 //0, 1, 0, 0,
 //0, 0, 1, 0,
 //X, Y, Z, 1
-mat4 myTranslatingMatrix = mat4(1, 0, 0, 0,
-								0, 1, 0, 0,
-								0, 0, 1, 0,
+mat4 myTranslatingMatrix = mat4(1,  0,  0,  0,
+								0,  1,  0,  0,
+								0,  0,  1,  0,
 								.0, .0, .0, 1);
 
-mat4 myScalingMatrix = mat4(.75, 0, 0, 0,
-					 		0, .75, 0, 0,
-					 		0, 0, .75, 0,
-					 		0, 0, 0, 1);
+mat4 myScalingMatrix = mat4(.75, 0,   0,   0,
+					 		0,   .75, 0,   0,
+					 		0,   0,   .75, 0,
+					 		0,   0,   0,   1);
 
 //Rotate around z-axis					 		
-/*mat4 myRotatingMatrix = mat4(cos(time), -sin(time), 0, 0,
-							 sin(time), cos(time), 0, 0,
-							 0, 0, 1, 0,
-							 0, 0, 0, 1);*/
-					
+//mat4 myRotatingMatrix = mat4(cos(yDisp), -sin(yDisp), 0, 0,
+//							 sin(yDisp), cos(yDisp), 0, 0,
+//							 0, 0, 1, 0,
+//							 0, 0, 0, 1);
+
 //Rotate around x-axis
-/*mat4 myRotatingMatrix = mat4(1, 0, 0, 0,
-							 0, cos(time), -sin(time), 0,
-							 0, sin(time), cos(time), 0,
-							 0, 0, 0, 1);*/
-							
+//mat4 myRotatingMatrix = mat4(1, 0, 0, 0,
+//							 0, cos(yDisp), -sin(yDisp), 0,
+//							 0, sin(yDisp), cos(yDisp), 0,
+//							 0, 0, 0, 1);
+
 //Rotate around y-axis
-mat4 myRotatingMatrix = mat4(cos(time), 0, -sin(time), 0,
-							 0, 1, 0, 0,
-							 sin(time), 0, cos(time), 0,
-							 0, 0, 0, 1);
-							 
+mat4 myRotatingMatrix = mat4(cos(yDisp), 0, -sin(yDisp), 0,
+							 0,          1, 0,           0,
+							 sin(yDisp), 0, cos(yDisp),  0,
+							 0,          0, 0,           1);
+
 vec3 cameraTarget = vec3(0, 0, 0);
 vec3 up = vec3(0, 1, 0);
 
@@ -65,31 +65,32 @@ vec3 cameraDirection = normalize(cameraPosition - cameraTarget);
 vec3 cameraRight = normalize(cross(up, cameraDirection));
 vec3 cameraUp = cross(cameraDirection, cameraRight);
 
-mat4 cameraMatrix = mat4(1, 0, 0, 0,
-						 0, 1, 0, 0,
-						 0, 0, 1, 0,
+//Camera translation matrix
+mat4 cameraMatrix = mat4(1,                  0,                  0,                  0,
+						 0,                  1,                  0,                  0,
+						 0,                  0,                  1,                  0,
 						 -cameraPosition[0], -cameraPosition[1], -cameraPosition[2], 1);
 					   
 //cameraRight
 //cameraUp
 //cameraDirection
-mat4 viewMatrix = mat4(cameraRight, 0,
-					   cameraUp, 0,
+mat4 viewMatrix = mat4(cameraRight,     0,
+					   cameraUp,        0,
 					   cameraDirection, 0,
-					   0, 0, 0, 1);
+					   0,    0,    0,   1);
 						 
 
-mat4 projectionMatrix = mat4(1/(1.5*tan(fovX/2)), 0, 0, 0,
-							 0, 1/tan(fovY/2), 0, 0,
-							 0, 0, (-nearZ-farZ)/(nearZ-farZ), (2*farZ*nearZ)/(nearZ-farZ),
-							 0, 0, 0, 1);
+mat4 projectionMatrix = mat4(1/(1.5*tan(fovX/2)), 0,             0,                          0,
+							 0,                   1/tan(fovY/2), 0,                          0,
+							 0,                   0,             (-nearZ-farZ)/(nearZ-farZ), (2*farZ*nearZ)/(nearZ-farZ),
+							 0,                   0,             0,                          1);
 							 
 /*mat4 projectionMatrix = mat4(1/(1.5*tan(fovX/2)), 0, 0, 0,
 							 0, 1/tan(fovY/2), 0, 0,
 							 0, 0, (farZ + nearZ)/(farZ - nearZ), 1.0,
 							 0, 0, (-2.0*farZ*nearZ)/(farZ - nearZ), 0);*/
 
-mat4 modelMatrix = myTranslatingMatrix * myScalingMatrix;
+mat4 modelMatrix = myTranslatingMatrix * myRotatingMatrix * myScalingMatrix;
 mat4 MVPMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
 //Correct way to do it (technically, but doesn't work)
@@ -99,6 +100,6 @@ mat4 MVPMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
 void main(){
 	vColor = color;
-	
+
 	gl_Position = projectionMatrix * cameraMatrix * modelMatrix * vec4(position, 1.0);
 }
