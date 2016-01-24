@@ -30,7 +30,7 @@ public class Triangles {
 		
 		indices = new ArrayList<Integer>();
 		
-		for(int i = 0; i < indices.size()*6; i++){
+		for(int i = 0; i < vertices.size()*6-n; i++){
 			indices.add(i);
 			indices.add(i+1);
 			indices.add(i+n);
