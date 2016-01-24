@@ -13,7 +13,7 @@ public class Triangles {
 		createIndices();
 	}
 	
-	public void createVertices(int n){
+	public Vertex createVertices(int n){
 		//n is the number of rectangles in cylinder
 		
 		vertices = new float[10]; //360 / 10 = 36 degrees per vertex
@@ -63,6 +63,8 @@ public class Triangles {
 		}
 		
 		Vertex cylinder = new Vertex(aPos, aTex, aNorm);
+		
+		return cylinder;
 	}
 	
 	public void createIndices(){
