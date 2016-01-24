@@ -8,6 +8,8 @@ public class Triangles {
 	private ArrayList<Float> vertices;
 	private ArrayList<Integer> indices;
 	
+	private final static int HEIGHT = 5; 
+	
 	public Triangles(){
 	
 	}
@@ -17,7 +19,7 @@ public class Triangles {
 		double theta = 0;
 		
 		vertices = new ArrayList<Float>();
-		for(int i = 0; i < 5; i++){
+		for(int i = 0; i < HEIGHT; i++){
 			for(int j = 0; j < n; j++) {
 				vertices.add((float) Math.cos(theta));
 				vertices.add((float)(i*2*Math.sin(Math.PI/n)));
@@ -30,14 +32,25 @@ public class Triangles {
 		
 		indices = new ArrayList<Integer>();
 		
-		for(int i = 0; i < indices.size()*6; i++){
-			indices.add(i);
-			indices.add(i+1);
-			indices.add(i+n);
-			
-			indices.add(i+1);
-			indices.add(i+n);
-			indices.add(i+n+1);
+		for(int i = 0; i < (n*(HEIGHT-1)-1); i++){
+			if( (i+1) % n == 0 ) {
+				indices.add(i);
+				indices.add(i-n+1);
+				indices.add(i+n);
+				
+				indices.add(i-n+1);
+				indices.add(i+n);
+				indices.add(i+1);
+			}
+			else {
+				indices.add(i);
+				indices.add(i+1);
+				indices.add(i+n);
+				
+				indices.add(i+1);
+				indices.add(i+n);
+				indices.add(i+n+1);
+			}
 		}
 	}
 	
