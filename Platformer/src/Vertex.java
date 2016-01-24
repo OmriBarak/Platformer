@@ -1,7 +1,11 @@
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Vertex {	
 	private float[] position; //xyzw
@@ -20,43 +24,43 @@ public class Vertex {
 	}
 	
 	void bufferData() {
-		vaoId = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vaoId);
+		vaoId = glGenVertexArrays();
+		glBindVertexArray(vaoId);
 		
-		vboPosition	= GL15.glGenBuffers();
+		vboPosition	= glGenBuffers();
 		FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(position.length);
         positionBuffer.put(position);
         positionBuffer.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPosition);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 4, GL11.GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vboPosition);
+        glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
         
-        vboTexUV	= GL15.glGenBuffers();
+        vboTexUV	= glGenBuffers();
         FloatBuffer textureUVBuffer = BufferUtils.createFloatBuffer(texUV.length);
         textureUVBuffer.put(position);
         textureUVBuffer.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTexUV);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, textureUVBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vboTexUV);
+        glBufferData(GL_ARRAY_BUFFER, textureUVBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
         
-        vboNormal	= GL15.glGenBuffers();
+        vboNormal	= glGenBuffers();
         FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(normal.length);
         normalBuffer.put(position);
         normalBuffer.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboNormal);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, normalBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(2, 4, GL11.GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vboNormal);
+        glBufferData(GL_ARRAY_BUFFER, normalBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 4, GL_FLOAT, false, 0, 0);
         
-        vboColor	= GL15.glGenBuffers();
+        vboColor	= glGenBuffers();
         FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(color.length);
         colorBuffer.put(position);
         colorBuffer.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboColor);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(3, 4, GL11.GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, vboColor);
+        glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(3, 4, GL_FLOAT, false, 0, 0);
         
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        GL30.glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 	}
 	
 	public void setPosition(float[] pos)		{ position = pos; }

@@ -1,9 +1,5 @@
 import java.util.ArrayList;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.glfw.GLFW.*;
-
 public class Triangles {
 	private ArrayList<Float> vertices;
 	private ArrayList<Integer> indices;

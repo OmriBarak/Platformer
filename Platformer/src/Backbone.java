@@ -3,8 +3,11 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Backbone
 {
@@ -17,18 +20,20 @@ public class Backbone
 	private long windowUID;
 	private long deltaRef;
 
+	private ShaderProgram shaderProgram;
+	
 	private void init()
 	{
 		deltaRef = System.currentTimeMillis();
-		
-		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		
 		if(glfwInit() != GLFW_TRUE)
 		{
 			System.err.println("Couldn't initialize GLFW");
 			assert false;
 		}
-
+		
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -37,23 +42,31 @@ public class Backbone
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		
 		windowUID = glfwCreateWindow(WIDTH, HEIGHT, "Mario meets Fez meets Journey", NULL, NULL);
+		
 		if (windowUID == NULL ) {
 			System.err.println("Failed to create the GLFW window");
 			assert false;
 		}
-
-		glfwSetKeyCallback(windowUID, keyCallback = new KeyboardHandler());
-
+		
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(windowUID, (vidmode.width()-WIDTH)/2, (vidmode.height()-HEIGHT)/2);
 		
 		glfwMakeContextCurrent(windowUID);
-		glfwShowWindow(windowUID);
 		
 		GL.createCapabilities();
+		
 		glfwSwapInterval(1);
-		GL11.glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+		glfwSetKeyCallback(windowUID, keyCallback = new KeyboardHandler());
 		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		
+		shaderProgram = new ShaderProgram();
+        shaderProgram.attachVertexShader("VertexShader.glsl");
+        shaderProgram.attachFragmentShader("FragmentShader.glsl");
+        shaderProgram.link();
+        
+        glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+        
 		System.out.println("Running OpenGL version" + glGetString(GL_VERSION) + ".");
 	}
 
@@ -77,8 +90,9 @@ public class Backbone
 			draw();
 		}
 		
-		glfwDestroyWindow(windowUID);
 		keyCallback.release();
+		shaderProgram.dispose();
+		glfwDestroyWindow(windowUID);
 		glfwTerminate();
 		errorCallback.release();
 	}
