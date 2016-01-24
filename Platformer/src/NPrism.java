@@ -1,20 +1,20 @@
 import java.util.ArrayList;
 
-public class Cylinder {
+public class NPrism {
 	private ArrayList<Float> vertices;
 	private ArrayList<Integer> indices;
 	
 	private final static int HEIGHT = 200; 
 	private int n;
 	
-	public Cylinder(){
+	public NPrism(int n){
 		vertices = new ArrayList<Float>();
 		indices = new ArrayList<Integer>();
-		n = 0;
+		this.n = n;
+		genPrism();
 	}
 	
-	public void genPrism(int n){
-		this.n = n;
+	private void genPrism(){
 		double theta = 0;
 		
 		vertices = new ArrayList<Float>();

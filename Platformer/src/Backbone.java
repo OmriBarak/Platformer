@@ -9,6 +9,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import org.joml.*;
+
 public class Backbone
 {
 	private static final int WIDTH = 1000;
@@ -17,6 +19,19 @@ public class Backbone
 	private float cameraPosition[];
 	private float yDisplacement;
 	Mesh mesh;
+	Mesh bar;
+	Matrix4f translationMatrix = new Matrix4f(1.0f,  0.0f,  0.0f,  0.0f,
+											  0.0f,  1.0f,  0.0f,  0.0f,
+											  0.0f,  0.0f,  1.0f,  1.0f,
+											  1.0f,  0.0f,  0.0f,  1.0f);
+	Matrix4f scaleMatrix = new Matrix4f(0.25f,  0.0f,  0.0f,  0.0f,
+										0.0f,  1.0f,  0.0f,  0.0f,
+										0.0f,  0.0f,  0.125f,  0.0f,
+										0.0f,  0.0f,  0.0f,  1.0f);
+	Matrix4f rotationMatrix = new Matrix4f(1.0f,  0.0f,  0.0f,  0.0f,
+										   0.0f,  1.0f,  0.0f,  0.0f,
+										   0.0f,  0.0f,  1.0f,  0.0f,
+										   0.0f,  0.0f,  0.0f,  1.0f);
 	
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
@@ -81,14 +96,27 @@ public class Backbone
 		
 		yDisplacement = -3.6f;
 		
-		Cylinder cylinder = new Cylinder();
-		cylinder.genPrism(40);
-		mesh = cylinder.toMesh();
+		mesh = new NPrism(40).toMesh();
 		mesh.bufferData();
+		
+		bar = new NPrism(4).toMesh();
+		Vector4f vertex;
+		Matrix4f transformationMatrix = translationMatrix.mul(scaleMatrix);
+		float[] vertices = bar.getPosition();
+		for(int i=0; i<bar.getPosition().length/3; i++) {
+			vertex = new Vector4f(vertices[i*3], vertices[i*3+1], vertices[i*3+2], 1.0f);
+			transformationMatrix.transformAffine(vertex);
+			vertices[3*i] = vertex.x;
+			vertices[3*i+1] = vertex.y;
+			vertices[3*i+2] = vertex.z;
+		}
+		bar.setPosition(vertices);
+		bar.bufferData();
 	}
 
 	private void draw() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		float delta = (float)delta();
 		//CAMERA STUFF
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
@@ -111,23 +139,24 @@ public class Backbone
 		int farLocation = glGetUniformLocation(shaderProgram.getID(), "farZ");
 		glUniform1f(farLocation, farZ);
 		
-//		if(glfwGetKey(windowUID, GLFW_KEY_W) == GLFW_PRESS) cameraPosition[2] += 0.1f; //Move forward
-//		else if(glfwGetKey(windowUID, GLFW_KEY_S) == GLFW_PRESS) cameraPosition[2] -= 0.1f; //Move backward
-//		if(glfwGetKey(windowUID, GLFW_KEY_A) == GLFW_PRESS) cameraPosition[0] -= 0.1f; //Move left
-//		else if(glfwGetKey(windowUID, GLFW_KEY_D) == GLFW_PRESS) cameraPosition[0] += 0.1f; //Move right
-//		if(glfwGetKey(windowUID, GLFW_KEY_UP) == GLFW_PRESS) cameraPosition[1] += 0.1f; //Move up
-//		else if(glfwGetKey(windowUID, GLFW_KEY_DOWN) == GLFW_PRESS) cameraPosition[1] -= 0.1f; //Move down
+		if(glfwGetKey(windowUID, GLFW_KEY_W) == GLFW_PRESS) cameraPosition[2] += 0.1f; //Move forward
+		else if(glfwGetKey(windowUID, GLFW_KEY_S) == GLFW_PRESS) cameraPosition[2] -= 0.1f; //Move backward
+		if(glfwGetKey(windowUID, GLFW_KEY_A) == GLFW_PRESS) cameraPosition[0] -= 0.1f; //Move left
+		else if(glfwGetKey(windowUID, GLFW_KEY_D) == GLFW_PRESS) cameraPosition[0] += 0.1f; //Move right
+		if(glfwGetKey(windowUID, GLFW_KEY_UP) == GLFW_PRESS) cameraPosition[1] += 0.1f; //Move up
+		else if(glfwGetKey(windowUID, GLFW_KEY_DOWN) == GLFW_PRESS) cameraPosition[1] -= 0.1f; //Move down
 		int yDisp = glGetUniformLocation(shaderProgram.getID(), "yDisp");
 		glUniform1f(yDisp, yDisplacement);
 		if(glfwGetKey(windowUID, GLFW_KEY_LEFT) == GLFW_PRESS) yDisplacement -= 0.01f; //Move left
-			if(yDisplacement<-3.6f) yDisplacement = -3.6f;
+			//if(yDisplacement<-3.6f) yDisplacement = -3.6f;
 		if(glfwGetKey(windowUID, GLFW_KEY_RIGHT) == GLFW_PRESS) yDisplacement += 0.01f; //Move right
-			if(yDisplacement>0.3f) yDisplacement = 0.3f;
+			//if(yDisplacement>0.3f) yDisplacement = 0.3f;
 		System.out.println(yDisplacement);
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
-		mesh.draw(delta());
+		mesh.draw(delta);
+		bar.draw(delta);
 		
 		glfwSwapBuffers(windowUID);
 	}
